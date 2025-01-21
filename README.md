@@ -1,1 +1,1 @@
-# stock-report-sentiment
+# Cryptopals Challenges - Done in Go
