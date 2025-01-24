@@ -16,6 +16,18 @@ func HexToByte(inp string) []byte {
 	return out[:n]
 }
 
+func StringToByte(inp string) []byte {
+	return []byte(inp)
+}
+
+func Base64ToByte(inp string) []byte {
+	dec, err := base64.StdEncoding.DecodeString(inp)
+	if err != nil {
+		panic(err)
+	}
+	return dec
+}
+
 // string is just for pprint
 func ByteToBase64(inp []byte) string {
 	enc := base64.StdEncoding.EncodeToString(inp)
@@ -46,9 +58,9 @@ func ByteXor(inp []byte, key []byte) []byte {
 func EvalPlainText(inpRaw []byte) float64 {
 	capsHeuristic := 0.05
 	spaceHeuristic := 0.18
-	charHeuristic := 0.72
+	charHeuristic := 0.78
 
-	capsCount, spaceCount, charCount := 0, 0, 0
+	capsCount, spaceCount, charCount, deduction := 0, 0, 0, 0
 
 	for _, v := range inpRaw {
 		if v >= 65 && v <= 90 {
@@ -57,12 +69,15 @@ func EvalPlainText(inpRaw []byte) float64 {
 			charCount = charCount + 1
 		} else if v == 32 {
 			spaceCount = spaceCount + 1
+		} else {
+			deduction = deduction + 1
 		}
 	}
 
 	score := math.Abs(float64(capsCount)/float64(len(inpRaw)) - capsHeuristic)
 	score = score + math.Abs(float64(charCount)/float64(len(inpRaw))-charHeuristic)
 	score = score + math.Abs(float64(spaceCount)/float64(len(inpRaw))-spaceHeuristic)
+	score = score + float64(deduction)/50
 
 	return score
 }
