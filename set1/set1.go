@@ -22,18 +22,8 @@ func Ch2(inp1 string, inp2 string) string {
 }
 
 func Ch3(inp string) (float64, string) {
-	inpRaw := cryptoutils.HexToByte(inp)
-
-	var minScore float64 = 100
-	var likelyDecode []byte
-	for i := byte(0); i < 255; i++ {
-		out := cryptoutils.ByteXor(inpRaw, []byte{i})
-		if cryptoutils.EvalPlainText(out) < minScore {
-			minScore = cryptoutils.EvalPlainText(out)
-			likelyDecode = out
-		}
-	}
-	return minScore, cryptoutils.ByteToString(likelyDecode)
+	minScore, likelyDecode := cryptoutils.FindBestSingleXor(inp)
+	return minScore, likelyDecode
 }
 
 func Ch4(filepath string) (float64, string) {
@@ -48,7 +38,7 @@ func Ch4(filepath string) (float64, string) {
 	var likelyDecode string
 
 	for scanner.Scan() {
-		score, text := Ch3(scanner.Text())
+		score, text := cryptoutils.FindBestSingleXor(scanner.Text())
 		if score < minScore {
 			minScore = score
 			likelyDecode = text

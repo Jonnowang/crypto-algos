@@ -81,3 +81,18 @@ func EvalPlainText(inpRaw []byte) float64 {
 
 	return score
 }
+
+func FindBestSingleXor(inp string) (float64, string) {
+	inpRaw := HexToByte(inp)
+
+	var minScore float64 = 100
+	var likelyDecode []byte
+	for i := byte(0); i < 255; i++ {
+		out := ByteXor(inpRaw, []byte{i})
+		if EvalPlainText(out) < minScore {
+			minScore = EvalPlainText(out)
+			likelyDecode = out
+		}
+	}
+	return minScore, ByteToString(likelyDecode)
+}
