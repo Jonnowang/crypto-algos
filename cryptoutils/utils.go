@@ -1,8 +1,10 @@
 package cryptoutils
 
 import (
+	"crypto/aes"
 	"encoding/base64"
 	"encoding/hex"
+	"fmt"
 	"math"
 )
 
@@ -108,4 +110,20 @@ func HammingDistance(inp1 []byte, inp2 []byte) int16 {
 		}
 	}
 	return dist
+}
+
+func DecryptAesEcb(inp []byte, key []byte) []byte {
+	cipher, err := aes.NewCipher(key)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	decrypted := make([]byte, len(inp))
+	size := 16
+
+	for bs, be := 0, size; bs < len(inp); bs, be = bs+size, be+size {
+		cipher.Decrypt(decrypted[bs:be], inp[bs:be])
+	}
+
+	return decrypted
 }

@@ -26,4 +26,10 @@ func main() {
 
 	log.Println("Challenge 6")
 	log.Print(set1.Ch6("./set1/data/ch6.txt"))
+
+	log.Println("Challenge 7")
+	log.Print(set1.Ch7("./set1/data/ch7.txt", "YELLOW SUBMARINE"))
+
+	log.Println("Challenge 8")
+	log.Print(set1.Ch8("./set1/data/ch8.txt"))
 }

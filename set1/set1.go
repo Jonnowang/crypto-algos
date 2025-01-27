@@ -126,3 +126,48 @@ func Ch6(filepath string) string {
 
 	return cryptoutils.ByteToString(out)
 }
+
+func Ch7(filepath string, keyPlain string) string {
+	f, err := os.Open(filepath)
+	if err != nil {
+		panic(err)
+	}
+
+	defer f.Close()
+	scanner := bufio.NewScanner(f)
+	var inpBytes []byte
+	for scanner.Scan() {
+		inpBytes = append(inpBytes, cryptoutils.Base64ToByte(scanner.Text())...)
+	}
+
+	key := cryptoutils.StringToByte(keyPlain)
+	out := cryptoutils.DecryptAesEcb(inpBytes, key)
+
+	return cryptoutils.ByteToString(out)
+}
+
+func Ch8(filepath string) string {
+	f, err := os.Open(filepath)
+	if err != nil {
+		panic(err)
+	}
+
+	defer f.Close()
+	scanner := bufio.NewScanner(f)
+	blockSize := 16
+	blockSet := make(map[[16]byte]bool)
+	for scanner.Scan() {
+		lineBytes := cryptoutils.HexToByte(scanner.Text())
+		for i := 0; i < len(lineBytes); i += blockSize {
+			var block [16]byte
+			copy(block[:], lineBytes[i:i+blockSize])
+			_, ok := blockSet[block]
+			if ok {
+				return cryptoutils.ByteToHex(lineBytes)
+			}
+			blockSet[block] = true
+		}
+	}
+
+	return "No valid block found"
+}
