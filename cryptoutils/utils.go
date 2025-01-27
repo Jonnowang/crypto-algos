@@ -82,17 +82,30 @@ func EvalPlainText(inpRaw []byte) float64 {
 	return score
 }
 
-func FindBestSingleXor(inp string) (float64, string) {
-	inpRaw := HexToByte(inp)
-
+func FindBestSingleXor(inp []byte) (float64, []byte) {
 	var minScore float64 = 100
 	var likelyDecode []byte
 	for i := byte(0); i < 255; i++ {
-		out := ByteXor(inpRaw, []byte{i})
+		out := ByteXor(inp, []byte{i})
 		if EvalPlainText(out) < minScore {
 			minScore = EvalPlainText(out)
 			likelyDecode = out
 		}
 	}
-	return minScore, ByteToString(likelyDecode)
+	return minScore, likelyDecode
+}
+
+func HammingDistance(inp1 []byte, inp2 []byte) int16 {
+	var dist int16 = 0
+
+	for i := range len(inp1) {
+		for mask := byte(128); mask != 0; mask >>= 1 {
+			if (inp1[i] & mask) == (inp2[i] & mask) {
+				// do nothing
+			} else {
+				dist = dist + 1
+			}
+		}
+	}
+	return dist
 }

@@ -23,4 +23,7 @@ func main() {
 
 	log.Println("Challenge 5")
 	log.Print(set1.Ch5("Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal", "ICE"))
+
+	log.Println("Challenge 6")
+	log.Print(set1.Ch6("./set1/data/ch6.txt"))
 }
